@@ -10,10 +10,13 @@ import { FileEditContext, TemplateEditContext } from './templateEdit';
 export async function replaceFileTemplateLevelVariablesAsync(context: FileEditContext, content: string): Promise<string> {
   const cache = new Map<string, string>();
   const matches = content.match(/\${.+?}/g);
+  if (matches == null) {
+    return content; // Nothing to replace.
+  }
 
   // TODO: This uses the regexp twice to deal with async, but parsing the file
   // manually would allow to do this in just one pass.
-  for (let match of matches!) {
+  for (let match of matches) {
     if (!cache.has(match)) {
       const replacementValue = await getReplacementValueAsync(context, match);
       cache.set(match, replacementValue);

@@ -13,7 +13,7 @@ const TemplatesManifestDefaultPath = "./.templates/templates.json";
 
 export function getManifestPath(folder: vscode.WorkspaceFolder): vscode.Uri {
   const manifestPath = vscode.workspace.getConfiguration("templates")
-    .get("manifestPath", TemplatesManifestDefaultPath);
+    .get("manifestPath", TemplatesManifestDefaultPath) || TemplatesManifestDefaultPath;
   const uri = vscode.Uri.joinPath(folder.uri, manifestPath);
   return uri;
 }
@@ -32,25 +32,9 @@ export function getRegisteredTemplates(): ReadonlyMap<string, Template> {
  * @returns {@link TemplateManifest} instance.
  */
 export async function loadManifestAsync(uri: vscode.Uri): Promise<TemplatesManifest> {
-  return vscode.workspace.openTextDocument(uri)
-    .then((document: vscode.TextDocument) => {
-      const contents = document.getText();
-      return <TemplatesManifest>JSON.parse(contents);
-    });
-}
-
-/**
- * Load a template manifest.
- * @param manifestUri Manifets URI. Expected to belong to an existing workspace.
- * @returns {@link TemplateManifest} instance.
- */
-export async function loadTemplateManifestAsync2(manifestUri: vscode.Uri): Promise<TemplatesManifest> {
-  return vscode.workspace.openTextDocument(manifestUri)
-    .then((document: vscode.TextDocument) => {
-      const documentText = document.getText();
-      const manifest = <TemplatesManifest>JSON.parse(documentText);
-      return manifest;
-    });
+  const document = await vscode.workspace.openTextDocument(uri);
+  const contents = document.getText();
+  return <TemplatesManifest>JSON.parse(contents);
 }
 
 /**
