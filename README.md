@@ -58,7 +58,8 @@ Once you have defined your templates, using them to create items is straight for
 ![image](https://user-images.githubusercontent.com/38414719/155913242-8476fb85-e916-40f4-ae04-434ef4341efe.png)
 
 4. And done!
-![image](https://user-images.githubusercontent.com/38414719/155914256-0855d384-04e1-4992-bf08-35208fa02fb3.png)
+![image](https://user-images.githubusercontent.com/38414719/155915384-1f5fc5fc-ae5a-4c01-83ba-18d26f8f8306.png)
+
 
 The result of adding a new item via a template is a single transaction that can be undone as such. 
 
