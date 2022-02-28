@@ -11,6 +11,11 @@ const Templates: Map<string, Template> = new Map<string, Template>();
  */
 const TemplatesManifestDefaultPath = "./.templates/templates.json";
 
+/**
+ * Get expected path to templates manifest.
+ * @param folder Workspace.
+ * @returns Path as URI.
+ */
 export function getManifestPath(folder: vscode.WorkspaceFolder): vscode.Uri {
   const manifestPath = vscode.workspace.getConfiguration("templates")
     .get("manifestPath", TemplatesManifestDefaultPath) || TemplatesManifestDefaultPath;
@@ -19,8 +24,8 @@ export function getManifestPath(folder: vscode.WorkspaceFolder): vscode.Uri {
 }
 
 /**
- * Get registered manifests.
- * @returns Registered manifests.
+ * Get templates registered via {@link registerTemplate}.
+ * @returns Registered templates.
  */
 export function getRegisteredTemplates(): ReadonlyMap<string, Template> {
   return Templates;
@@ -39,8 +44,8 @@ export async function loadManifestAsync(uri: vscode.Uri): Promise<TemplatesManif
 
 /**
  * Register a template.
- * @param id 
- * @param templateAsJSON 
+ * @param id Template Id. Recommended format: "${extension-id}:${exntension's template id}".
+ * @param templateAsJSON JSON vesion of {@link Template}.
  */
 export function registerTemplate(id: string, templateAsJSON: string): void {
   const template = <Template>JSON.parse(templateAsJSON);
@@ -48,7 +53,7 @@ export function registerTemplate(id: string, templateAsJSON: string): void {
 }
 
 /**
- * Unregister a template registered via {@link registerTemplate}.
+ * Unregister a template.
  * @param id Template Id.
  */
 export function unregisterTemplate(id: string): boolean {

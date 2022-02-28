@@ -5,6 +5,10 @@ import { createTemplateEditAsync } from './templateEdit';
 import { getManifestPath, getRegisteredTemplates, loadManifestAsync, registerTemplate, unregisterTemplate } from './templates';
 import { showTemplateWizardAsync } from './templatesUI';
 
+/**
+ * Extension startup. 
+ * @param context Context.
+ */
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -24,13 +28,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 /**
  * Run logic to add a new item using a template.
- * @param folder Folder to add new item to. Must be an absolute path to a folder
+ * @param folder Folder to add new item to. Must be an absolute URI to a folder
  * that belongs to an open workspace.
  */
 async function createNewItemsAsync(folder: vscode.Uri | string): Promise<void> {
 
-  // This is undefined if ran from Command-Palette: https://github.com/Microsoft/vscode/issues/3553
-  // so disabling there for now.
+  // TODO: The `folder` argument is undefined when ran from Command-Palette, so
+  // the associated command is disabled there. 
+  // See: https://github.com/Microsoft/vscode/issues/3553
   const folderUri = folder instanceof vscode.Uri ? folder : vscode.Uri.parse(folder, true);
 
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(folderUri);

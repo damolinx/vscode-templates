@@ -1,3 +1,6 @@
+/**
+ * File template descriptor.
+ */
 export interface FileTemplate {
   /**
    * Template-manifest relative path to a file template.
@@ -9,14 +12,17 @@ export interface FileTemplate {
   readonly target?: string;
 }
 
+/**
+ * Template descriptor.
+ */
 export interface Template {
   /**
-   * Create folder
+   * Create folder. Defaults to `false`.
    */
   readonly createFolder?: boolean;
 
   /**
-   * Template location.
+   * Template location, relative to parent {@link TemplateManifest} or {@link workspace}.
    */
   readonly location: string;
 
@@ -41,6 +47,9 @@ export interface Template {
   readonly defaultItemName?: string;
 }
 
+/**
+ * Template Manifest.
+ */
 export interface TemplatesManifest {
   /**
    * List of available templates.

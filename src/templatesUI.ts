@@ -1,10 +1,19 @@
 import * as vscode from 'vscode';
 import { Template } from './schemas';
 
+/**
+ * Custom {@link QuickPickItem} version that carries the corresponding {@link Template}
+ * to avoid having to reverse engineer selected item.
+ */
 interface TemplateQuickPickItem extends vscode.QuickPickItem {
   readonly template: Template;
 }
 
+/**
+ * Show a set of UI components to select a template and provide any required values.
+ * @param templates Array of templates to select from.
+ * @returns Selected template and captured values.
+ */
 export async function showTemplateWizardAsync(templates: Array<Template>)
   : Promise<{ template: Template, values: { itemName: string } } | undefined> {
   const items = templates
