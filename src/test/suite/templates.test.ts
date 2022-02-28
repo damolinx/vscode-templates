@@ -1,10 +1,7 @@
 import * as assert from 'assert';
 import { basename } from 'path';
 import { Template } from '../../schemas';
-import { FileEditContext, TemplateEditContext } from '../../templateEdit';
 import { getRegisteredTemplates, registerTemplate, unregisterTemplate } from '../../templates';
-
-import { replaceFileTemplateLevelVariablesAsync, replaceTemplateLevelVariablesAsync } from '../../variableReplacer';
 
 suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, () => {
   let restorables: Array<{ restore: () => void }>;
