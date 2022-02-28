@@ -3,7 +3,7 @@
     "displayName": "Templates",
     "description": "Templates for VS Code",
     "version": "0.0.1",
-    "publisher": "Daniel Molina",
+    "publisher": "",
     "repository": "https://github.com/damolinx/vscode-templates",
     "engines": {
         "vscode": "^1.42.0"
