@@ -5,20 +5,48 @@ import { FileEditContext, TemplateEditContext } from './templateEdit';
 
 // VSCode does not expose its system for variable replacement, so this 
 // code provides it. 
-//   https://github.com/microsoft/vscode/issues/46471
+// See: https://github.com/microsoft/vscode/issues/46471
 
-export async function replaceFileTemplateLevelVariablesAsync(context: FileEditContext, content: string): Promise<string> {
+// VSCode default variable reference:
+//  https://github.com/Microsoft/vscode-docs/blob/main/docs/editor/variables-reference.md
+
+// For reference, VS template parameters:
+//  https://docs.microsoft.com/en-us/visualstudio/ide/template-parameters?view=vs-2022
+
+
+interface VariableCallBack<TContext extends TemplateEditContext> {
+  (context: TContext, variableName: string): string | undefined;
+}
+
+/**
+ * Get a version of `content` with all file-template level variables replaced.
+ */
+export function replaceFileTemplateLevelVariablesAsync(context: FileEditContext, content: string): Promise<string> {
+  return replaceVariablesAsync(context, content, evalFileTemplateLevelVariable);
+}
+
+/**
+ * Get a version of `content` with all template level variables replaced.
+ */
+export function replaceTemplateLevelVariablesAsync(context: TemplateEditContext, content: string): Promise<string> {
+  return replaceVariablesAsync(context, content, evalTemplateLevelVariable);
+}
+
+
+async function replaceVariablesAsync<TContext extends TemplateEditContext>(context: TContext, content: string, variableCallBack: VariableCallBack<TContext>) {
   const cache = new Map<string, string>();
+
+  // TODO: This uses the regexp twice to deal with async but parsing and
+  // replacing manually would allow to do this in just one pass.
+
   const matches = content.match(/\${.+?}/g);
   if (matches == null) {
     return content; // Nothing to replace.
   }
 
-  // TODO: This uses the regexp twice to deal with async, but parsing the file
-  // manually would allow to do this in just one pass.
   for (let match of matches) {
     if (!cache.has(match)) {
-      const replacementValue = await getReplacementValueAsync(context, match);
+      const replacementValue = await getReplacementValueAsync(context, match, variableCallBack);
       cache.set(match, replacementValue);
     }
   }
@@ -26,19 +54,7 @@ export async function replaceFileTemplateLevelVariablesAsync(context: FileEditCo
   return content.replace(/\${.+?}/g, (match) => cache.get(match) ?? match);
 }
 
-export function replaceTemplateLevelVariables(context: TemplateEditContext, content: string): string {
-  const cache = new Map<string, string>();
-  return content.replace(/\${.+?}/g, (match) => {
-    let replacement = cache.get(match);
-    if (replacement === undefined) {
-      replacement = evalTemplateLevelVariable(context, match) ?? match;
-      cache.set(match, replacement);
-    }
-    return replacement;
-  });
-}
-
-async function getReplacementValueAsync(context: FileEditContext, variableName: string): Promise<string> {
+async function getReplacementValueAsync<TContext extends TemplateEditContext>(context: TContext, variableName: string, variableCallBack: VariableCallBack<TContext>): Promise<string> {
   let replacementValue: string | undefined;
   if (replacementValue === undefined) {
     if (variableName.startsWith('${env:')) {
@@ -48,9 +64,9 @@ async function getReplacementValueAsync(context: FileEditContext, variableName: 
       const commandName = variableName.substring(10, variableName.length - 1);
       replacementValue = await evalCommandAsync(commandName);
     } else if (variableName.startsWith('${input:')) {
-      // TODO: Needs UI to read inputs (aka a Wizard)
+      // TODO: Needs UI to read inputs.
     } else {
-      replacementValue = evalFileTemplateLevelVariable(context, variableName);
+      replacementValue = variableCallBack(context, variableName);
     }
   }
   return replacementValue ?? variableName;
@@ -65,12 +81,6 @@ async function evalCommandAsync(command: string): Promise<string | undefined> {
     return;
   }
 }
-
-// VSCode default variable reference:
-//   https://github.com/Microsoft/vscode-docs/blob/main/docs/editor/variables-reference.md
-
-// For reference, VS template parameters:
-//  https://docs.microsoft.com/en-us/visualstudio/ide/template-parameters?view=vs-2022
 
 function evalFileTemplateLevelVariable(context: FileEditContext, variable: string): string | undefined {
   switch (variable) {

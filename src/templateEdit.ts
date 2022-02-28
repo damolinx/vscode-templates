@@ -1,7 +1,10 @@
 import * as vscode from 'vscode';
 import { FileTemplate, Template } from './schemas';
-import { replaceFileTemplateLevelVariablesAsync, replaceTemplateLevelVariables } from './variableReplacer';
+import { replaceFileTemplateLevelVariablesAsync, replaceTemplateLevelVariablesAsync } from './variableReplacer';
 
+/**
+ * Context used to create a template edit.
+ */
 export interface TemplateEditContext {
   itemName: string;
   targetFolder: vscode.Uri;
@@ -10,6 +13,9 @@ export interface TemplateEditContext {
   workspace: vscode.WorkspaceFolder;
 }
 
+/**
+ * Context used to create a file-template edit.
+ */
 export interface FileEditContext extends TemplateEditContext {
   source: vscode.Uri;
   target: vscode.Uri;
@@ -24,7 +30,7 @@ export async function createTemplateEditAsync(context: TemplateEditContext): Pro
   for (const templateFile of context.template.files) {
     const editContext = <FileEditContext>{
       ...context,
-      ...getUris(context, templateFile)
+      ...await getUrisAsync(context, templateFile)
     };
     const targetContent = await getTargetContentAsync(editContext);
     await updateWorkspaceEditAsync(edit, editContext.target, targetContent);
@@ -32,8 +38,8 @@ export async function createTemplateEditAsync(context: TemplateEditContext): Pro
   return edit;
 }
 
-function getUris(context: TemplateEditContext, templateFile: FileTemplate): { source: vscode.Uri, target: vscode.Uri } {
-  const targetItemName = (templateFile.target && replaceTemplateLevelVariables(context, templateFile.target)) || templateFile.source;
+async function getUrisAsync(context: TemplateEditContext, templateFile: FileTemplate): Promise<{ source: vscode.Uri, target: vscode.Uri }> {
+  const targetItemName = (templateFile.target && await replaceTemplateLevelVariablesAsync(context, templateFile.target)) || templateFile.source;
   const targetRelativePath = context.template.createFolder ? [context.itemName, targetItemName] : [targetItemName];
   return {
     source: vscode.Uri.joinPath(context.templateRoot, templateFile.source),
