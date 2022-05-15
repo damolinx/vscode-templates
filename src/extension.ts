@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 /**
- * Run logic to add a new item using a template.
+ * Add a new item using a template.
  * @param folder Folder to add new item to. Must be an absolute URI to a folder
  * that belongs to an open workspace.
  */
