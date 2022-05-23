@@ -37,7 +37,7 @@ To add a simple HTML+JavaScript template, your manifest will look like this:
 ```
 If your manifest is at the expected default location, `page.html` would expected to have this path `./templates/html/page.html`, relative to your current workspace. Similar logic applies to `page.js`. 
 
-## Using an extension
+## Using from an extension
 The extension allows other extensions to register, or unregister, their own templates. This is achieved using VSCode two commands: 
 
 - `template.registerTemplate` allows to register a single template (but you can call multiple times).The command takes two arguments:
@@ -59,7 +59,6 @@ Once you have defined your templates, using them to create items is straight for
 
 4. And done!
 ![image](https://user-images.githubusercontent.com/38414719/155915384-1f5fc5fc-ae5a-4c01-83ba-18d26f8f8306.png)
-
 
 The result of adding a new item via a template is a single transaction that can be undone as such. 
 

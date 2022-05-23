@@ -28,15 +28,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 /**
  * Add a new item using a template.
- * @param folder Folder to add new item to. Must be an absolute URI to a folder
+ * @param uri Folder URI to add new item to. Must be an absolute URI to a folder
  * that belongs to an open workspace.
  */
-async function createNewItemsAsync(folder: vscode.Uri | string): Promise<void> {
+async function createNewItemsAsync(uri: vscode.Uri | string): Promise<void> {
 
   // TODO: The `folder` argument is undefined when ran from Command-Palette, so
   // the associated command is disabled there. 
   // See: https://github.com/Microsoft/vscode/issues/3553
-  const folderUri = folder instanceof vscode.Uri ? folder : vscode.Uri.parse(folder, true);
+  const folderUri = uri instanceof vscode.Uri ? uri : vscode.Uri.parse(uri, true);
 
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(folderUri);
   if (!workspaceFolder) {
