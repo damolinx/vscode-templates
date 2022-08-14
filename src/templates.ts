@@ -13,15 +13,24 @@ const TemplatesManifestDefaultPath = "./.templates/templates.json";
 
 /**
  * Get expected path to templates manifest.
- * @param folder Workspace.
+ * @param uri Folder containing manifest.
  * @returns Path as URI.
  */
-export function getManifestPath(folder: vscode.WorkspaceFolder): vscode.Uri {
+export function getManifestPath(uri: vscode.Uri): vscode.Uri {
   const manifestPath = vscode.workspace.getConfiguration("templates")
     .get("manifestPath", TemplatesManifestDefaultPath) || TemplatesManifestDefaultPath;
-  const uri = vscode.Uri.joinPath(folder.uri, manifestPath);
-  return uri;
+  return vscode.Uri.joinPath(uri, manifestPath);
 }
+
+/**
+ * Get expected path to templates manifest.
+ * @param folder Workspace root containing manifest.
+ * @returns Path as URI.
+ */
+export function getWorkspaceManifestPath(folder: vscode.WorkspaceFolder): vscode.Uri {
+  return getManifestPath(folder.uri);
+}
+
 
 /**
  * Get templates registered via {@link registerTemplate}.

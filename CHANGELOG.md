@@ -7,6 +7,8 @@
   - Due to [VSCode#3553](https://github.com/Microsoft/vscode/issues/3553): 
     - Only supported when a single workspace folder is open.
     - Always adds items to the root folder. 
+- Add support for templates to be defined from user home directory.
+  - For now, expected path is default `./templates/templates.json` OR value of `templates.manifestPath` setting.
   
 ## 0.0.1
 - Initial commit. Extension is, and will be maintaned, in usable state on every check-in.

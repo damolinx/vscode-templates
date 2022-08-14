@@ -5,9 +5,7 @@
 Note that the extension itself does not currently provide any templates, they either need to be defined in the [workspace](#workspace) or provided by another [extension](#using-an-extension).
 
 # Defining new templates
-
-## Workspace
-You need to create a JSON file that follows the [Template Manifest](#template-manifest) schema.  This file is by default loaded from the `./templates/template.json` file from your current workspace but you can control the path using the `templates.manifestPath` preference. All paths referenced from your manifest will be resolved relative to the manifest's parent folder.
+You need to create a JSON file that follows the [Template Manifest](#template-manifest) schema. Two locations are supported, the Wokrspace folder or the current user home directory. In both cases, the manifest file is loaded by default from the `./templates/template.json` path but you can control this using the `templates.manifestPath` preference. All paths referenced from the manifest will be resolved relative to the manifest's parent folder.
 
 ### Example
 To add a simple HTML+JavaScript template, your manifest will look like this:

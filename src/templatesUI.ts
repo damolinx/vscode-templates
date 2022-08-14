@@ -1,49 +1,38 @@
 import * as vscode from 'vscode';
 import { Template } from './schemas';
 
-/**
- * Custom {@link QuickPickItem} version that carries the corresponding {@link Template}
- * to avoid having to reverse engineer selected item.
- */
-interface TemplateQuickPickItem extends vscode.QuickPickItem {
-  readonly template: Template;
+//
+export interface TemplateRootUriTuple {
+  rootUri?: vscode.Uri,
+  template: Template
+};
+
+export interface TemplateMetadataTuple extends TemplateRootUriTuple {
+  values: { itemName: string };
 }
 
 /**
  * Show a set of UI components to select a template and provide any required values.
- * @param templates Array of templates to select from.
+ * @param tuples Tuples to select from.
  * @returns Selected template and captured values.
  */
-export async function showTemplateWizardAsync(templates: Array<Template>)
-  : Promise<{ template: Template, values: { itemName: string } } | undefined> {
-  const items = templates
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(t =>
-      <TemplateQuickPickItem>{
-        label: t.name, template: t, description: t.description
+export async function showTemplateWizardAsync(tuples: Array<TemplateRootUriTuple>)
+  : Promise<TemplateMetadataTuple | undefined> {
+  const items = tuples
+    .sort((a, b) => a.template.name.localeCompare(b.template.name))
+    .map((templateAndRoot) =>
+      <vscode.QuickPickItem & TemplateRootUriTuple>{
+        label: templateAndRoot.template.name,
+        description: templateAndRoot.template.description,
+        ...templateAndRoot,
       });
 
-  let template: Template | undefined;
+  let selection: TemplateRootUriTuple | undefined;
   let itemName: string | undefined;
 
-  const wizard = [
-    async () => {
-      template = await showTemplateQuickPick(items);
-      return { cancel: !template, back: false };
-    },
-    async () => {
-      const result = await showItemNameInput(template!, validateItemName);
-      if (result) {
-        itemName = result.value;
-        return { cancel: false, back: !!result.back };
-      } else {
-        return { cancel: true, back: false };
-      }
-    }
-  ];
-
-  for (let i = 0; i < wizard.length;) {
-    const result = await wizard[i]();
+  const wizardSteps = defineWizard();
+  for (let i = 0; i < wizardSteps.length;) {
+    const result = await wizardSteps[i]();
     if (result.cancel) {
       return; // cancelled by user
     }
@@ -54,28 +43,45 @@ export async function showTemplateWizardAsync(templates: Array<Template>)
     }
   }
 
-  // TODO: Support inputs/$input
+  if (!selection) {
+    throw new Error("Missing selected template (bug)");
+  }
+  if (!itemName) {
+    throw new Error("Missing target item name (bug)");
+  }
 
   return {
-    template: template!,
+    rootUri: selection.rootUri,
+    template: selection.template,
     values: {
-      itemName: itemName!,
+      itemName: itemName,
     }
   };
+
+  // TODO: Support inputs/$input
+  function defineWizard() {
+    return [
+      async () => {
+        selection = await showTemplateQuickPick(items);
+        return { cancel: !selection, back: false };
+      },
+      async () => {
+        const result = await showItemNameInput(selection!.template, validateItemName);
+        itemName = result?.value;
+        return { cancel: !result, back: !!result?.back };
+      }
+    ];
+  }
 }
 
-async function showTemplateQuickPick(items: TemplateQuickPickItem[]): Promise<Template | undefined> {
+async function showTemplateQuickPick(items: Array<TemplateRootUriTuple & vscode.QuickPickItem>): Promise<TemplateRootUriTuple | undefined> {
   const options = <vscode.QuickPickOptions>{
     matchOnDetail: true,
     matchOnDescription: true,
     placeHolder: "Select template to create item(s) from",
     title: "New Item",
   };
-
-  return vscode.window.showQuickPick(items, options)
-    .then((selectedItem?: TemplateQuickPickItem) => {
-      return selectedItem?.template;
-    });
+  return vscode.window.showQuickPick(items, options);
 }
 
 function showItemNameInput(template: Template, validateCallback: (input: string) => string | undefined):

@@ -42,7 +42,7 @@
         "templates.manifestPath": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Path to load manifests from. Defaults to `./.templates/templates.json` if empty."
+          "markdownDescription": "Relative Path to load manifests from. Defaults to `./.templates/templates.json` if empty."
         }
       }
     },
