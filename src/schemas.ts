@@ -6,6 +6,7 @@ export interface FileTemplate {
    * Template-manifest relative path to a file template.
    */
   readonly source: string;
+
   /**
    * Target-folder relative path. If missing, 'source' is used.
    */
@@ -22,33 +23,33 @@ export interface Template {
   readonly createFolder?: boolean;
 
   /**
-   * Template location, relative to parent {@link TemplateManifest} or {@link workspace}.
+   * Default item name.
    */
-  readonly location: string;
+  readonly defaultItemName?: string;
 
   /**
- * Template name.
- */
-  readonly name: string;
-
-  /**
-   * Template description.
+   * Template description. This is displayed in the template selection UI.
    */
   readonly description?: string;
 
   /**
-   * List of files to add.
+   * File templates to add.
    */
   readonly files: ReadonlyArray<FileTemplate>;
 
   /**
- * Default item name.
- */
-  readonly defaultItemName?: string;
+   * Template location. This is relative to parent {@link TemplateManifest}.
+   */
+  readonly location: string;
+
+  /**
+   * Template name. This is displayed in the template selection UI.
+   */
+  readonly name: string;
 }
 
 /**
- * Template Manifest.
+ * Templates Manifest.
  */
 export interface TemplatesManifest {
   /**
