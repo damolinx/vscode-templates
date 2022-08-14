@@ -54,12 +54,11 @@ async function getTargetContentAsync(context: FileEditContext): Promise<string> 
 }
 
 async function updateWorkspaceEditAsync(edit: vscode.WorkspaceEdit, target: vscode.Uri, content: string): Promise<void> {
-  //TODO: log errors, check if assumption of error => not-exists is ok.
-  const targetExists = !!(await vscode.workspace.fs.stat(target).then(undefined, () => undefined));
+  const targetExists = await vscode.workspace.fs.stat(target).then(() => true, () => false);
   edit.createFile(target, {
     overwrite: true,
   }, {
-    label: 'Create file',
+    label: targetExists ? 'Overwrite file' : 'Create file',
     needsConfirmation: targetExists,
   });
   edit.insert(target, new vscode.Position(0, 0), content);
