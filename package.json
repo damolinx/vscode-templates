@@ -10,7 +10,7 @@
     "url": "https://github.com/damolinx/vscode-templates"
   },
   "bugs": {
-      "url": "https://github.com/damolinx/vscode-templates/issues"
+    "url": "https://github.com/damolinx/vscode-templates/issues"
   },
   "engines": {
     "vscode": "^1.60.0"

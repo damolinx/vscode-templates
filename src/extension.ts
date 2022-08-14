@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 async function createNewItemsAsync(folder?: vscode.Uri | string): Promise<void> {
   // Workspace folder might not be available in all contexts.
   // See: https://github.com/Microsoft/vscode/issues/3553
-  const folderUri = folder 
+  const folderUri = folder
     ? folder instanceof vscode.Uri ? folder : vscode.Uri.parse(folder, true)
     : vscode.workspace.workspaceFolders?.at(0)?.uri;
 
@@ -66,7 +66,7 @@ async function createNewItemsAsync(folder?: vscode.Uri | string): Promise<void> 
   if (templates.size === 0) {
     const friendlyLocation = vscode.workspace.asRelativePath(manifestUri, true)
     const msg = `There are no templates available in workspace '${workspaceFolder.name}'. They can be defined in ${friendlyLocation}`;
-    
+
     // TODO: Offer to create a template file.
     vscode.window.showWarningMessage(msg);
     return;
