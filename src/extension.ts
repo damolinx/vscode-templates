@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       'templates.newItem',
-      (folder: vscode.Uri | string): Promise<void> => createNewItemsAsync(folder)
+      (folder?: vscode.Uri | string): Promise<void> => createNewItemsAsync(folder)
     ),
     vscode.commands.registerCommand(
       'templates.registerTemplate',
@@ -28,14 +28,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 /**
  * Add a new item using a template.
- * @param uri Folder URI to add new item to. Must be an absolute URI to a folder
- * that belongs to an open workspace.
+ * 
+ * @param folder Folder to add new item to. Must be an absolute URI or path to
+ * a folder that belongs to an open workspace. If missing, root of currently
+ * opened workspace will be used.
  */
-async function createNewItemsAsync(uri?: vscode.Uri | string): Promise<void> {
+async function createNewItemsAsync(folder?: vscode.Uri | string): Promise<void> {
   // Workspace folder might not be available in all contexts.
   // See: https://github.com/Microsoft/vscode/issues/3553
-  const folderUri = uri 
-    ? uri instanceof vscode.Uri ? uri : vscode.Uri.parse(uri, true)
+  const folderUri = folder 
+    ? folder instanceof vscode.Uri ? folder : vscode.Uri.parse(folder, true)
     : vscode.workspace.workspaceFolders?.at(0)?.uri;
 
   if (!folderUri) {
