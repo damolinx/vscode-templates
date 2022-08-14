@@ -31,12 +31,16 @@ export function activate(context: vscode.ExtensionContext) {
  * @param uri Folder URI to add new item to. Must be an absolute URI to a folder
  * that belongs to an open workspace.
  */
-async function createNewItemsAsync(uri: vscode.Uri | string): Promise<void> {
-
-  // TODO: The `folder` argument is undefined when ran from Command-Palette, so
-  // the associated command is disabled there. 
+async function createNewItemsAsync(uri?: vscode.Uri | string): Promise<void> {
+  // Workspace folder might not be available in all contexts.
   // See: https://github.com/Microsoft/vscode/issues/3553
-  const folderUri = uri instanceof vscode.Uri ? uri : vscode.Uri.parse(uri, true);
+  const folderUri = uri 
+    ? uri instanceof vscode.Uri ? uri : vscode.Uri.parse(uri, true)
+    : vscode.workspace.workspaceFolders?.at(0)?.uri;
+
+  if (!folderUri) {
+    throw new Error("BUG: Missing required target folder.");
+  }
 
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(folderUri);
   if (!workspaceFolder) {
@@ -58,10 +62,10 @@ async function createNewItemsAsync(uri: vscode.Uri | string): Promise<void> {
   }
 
   if (templates.size === 0) {
-    let msg = `There are no templates available in workspace '${workspaceFolder.name}'.`;
-    if (!manifestExists) {
-      msg += ` Templates can be added here: ${vscode.workspace.asRelativePath(manifestUri)}`;
-    }
+    const friendlyLocation = vscode.workspace.asRelativePath(manifestUri, true)
+    const msg = `There are no templates available in workspace '${workspaceFolder.name}'. They can be defined in ${friendlyLocation}`;
+    
+    // TODO: Offer to create a template file.
     vscode.window.showWarningMessage(msg);
     return;
   }

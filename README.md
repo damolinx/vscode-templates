@@ -50,6 +50,7 @@ The extension allows other extensions to register, or unregister, their own temp
 Once you have defined your templates, using them to create items is straight forward: 
 1. From the context menu on any folder, use the `New item from template …` to start the wizard.
 ![image](https://user-images.githubusercontent.com/38414719/155912187-ebffe7f2-c7dd-4626-b266-1f08b9a6e113.png)
+    - Alternatively, you can access from the `File/New File…` menu. Due to [VSCode#3553](https://github.com/Microsoft/vscode/issues/3553), this always adds items to the root of the workspace.
 
 2. Select the template you want to instantiate from the drop down.
 ![image](https://user-images.githubusercontent.com/38414719/155913124-7012a0bd-13f3-484e-932c-cdfeb1da7b95.png)
