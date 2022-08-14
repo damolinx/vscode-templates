@@ -2,6 +2,7 @@
 
 # Preview
 ## 0.0.2
+- Fix: template manifest not detected.
 - Add `New item from template …` to `File/New File …` command, and enable it on the Command-Palette.
   - Due to [VSCode#3553](https://github.com/Microsoft/vscode/issues/3553): 
     - Only supported when a single workspace folder is open.

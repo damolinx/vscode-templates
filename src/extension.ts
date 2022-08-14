@@ -55,7 +55,7 @@ async function createNewItemsAsync(folder?: vscode.Uri | string): Promise<void> 
   // Load templates from workspace every time and do not register them to avoid
   // the complexities of monitoring changes on workspace settings or the FS.
   const manifestUri = getManifestPath(workspaceFolder);
-  const manifestExists = await vscode.workspace.fs.stat(manifestUri).then(undefined, () => undefined);
+  const manifestExists = await vscode.workspace.fs.stat(manifestUri).then(() => true, () => false);
   if (manifestExists) {
     const manifest = await loadManifestAsync(manifestUri);
     manifest.templates.forEach((value: Template, index: number) => {
