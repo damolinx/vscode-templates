@@ -2,7 +2,7 @@
   "name": "damolinx-templates",
   "displayName": "Templates for VSCode",
   "description": "Templates is a VSCode extension that provides file template functionality inspired by Visual Studio's own",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "preview": true,
   "publisher": "damolinx",
   "repository": {

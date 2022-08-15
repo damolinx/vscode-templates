@@ -1,6 +1,7 @@
 # Change Log
 
 # Preview
+## 0.0.4
 ## 0.0.3
 - Add support for templates to be defined from user home directory.
   - For now, expected path is default `./templates/templates.json` OR value of `templates.manifestPath` setting.
