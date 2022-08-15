@@ -22,7 +22,10 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.window.showErrorMessage("No target folder to add items to");
           return;
         }
-        await createNewItemsAsync(folder);
+        await createNewItemsAsync(folder).catch((reason) =>
+          // TODO: Tons of validations.
+          vscode.window.showErrorMessage(reason.toString(), { modal: true, detail: reason.stack || ''})
+        );
       }
     ),
     vscode.commands.registerCommand(
@@ -68,7 +71,7 @@ async function createNewItemsAsync(folder: vscode.Uri | string): Promise<void> {
   }
 
   const rootUri = selection.rootUri ?? targetWorkspaceFolder.uri;
-  const templateRootUri = vscode.Uri.joinPath(rootUri, selection.template.location);
+  const templateRootUri = selection.template.location ? vscode.Uri.joinPath(rootUri, selection.template.location) : rootUri;
   const edit = await createTemplateEditAsync({
     ...selection.values,
     targetFolder: targetFolderUri,
