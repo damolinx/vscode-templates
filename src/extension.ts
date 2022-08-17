@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import { Utils as UriUtils } from 'vscode-uri';
-import * as os from 'os';
 import { Template } from './schemas';
 import { createTemplateEditAsync } from './templateEdit';
-import { getManifestPath as getManifestFileUri, getRegisteredTemplates, getWorkspaceManifestPath as getWorkspaceManifestFileUri, loadManifestAsync, registerTemplate, unregisterTemplate } from './templates';
+import { getHomeManifestUri, getRegisteredTemplates, getWorkspaceManifestUri, loadManifestAsync, registerTemplate, unregisterTemplate } from './templates';
 import { showTemplateWizardAsync, TemplateRootUriTuple } from './templatesUI';
 
 /**
@@ -23,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         await createNewItemsAsync(folder).catch((reason) =>
-          // TODO: Tons of validations.
+          // TODO: Tons of validation.
           vscode.window.showErrorMessage(reason.toString(), { modal: true, detail: reason.stack || ''})
         );
       }
@@ -96,9 +95,8 @@ async function loadTemplates(workspaceFolder: vscode.WorkspaceFolder): Promise<M
   });
 
   // Load templates from user folder then workspace
-  const homeFolder = vscode.Uri.file(os.homedir());
-  const homeManifestUri = getManifestFileUri(homeFolder);
-  const workspaceManifestUri = getWorkspaceManifestFileUri(workspaceFolder);
+  const homeManifestUri = getHomeManifestUri();
+  const workspaceManifestUri = getWorkspaceManifestUri(workspaceFolder);
   for (var manifestUri of [homeManifestUri, workspaceManifestUri]) {
     const manifestExists = await vscode.workspace.fs.stat(manifestUri).then(() => true, () => false);
     if (!manifestExists) {

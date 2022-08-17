@@ -39,10 +39,15 @@
     "configuration": {
       "title": "Templates",
       "properties": {
-        "templates.manifestPath": {
+        "templates.globalManifestPath": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Relative Path to load manifests from. Defaults to `./.templates/templates.json` if empty."
+          "markdownDescription": "Current user's home directory-relative Path to load manifests from. Defaults to `./.templates/templates.json` if empty."
+        },
+        "templates.workspaceManifestPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Workspace-relative path to load manifests from. Defaults to `./.templates/templates.json` if empty."
         }
       }
     },

@@ -40,7 +40,7 @@ The extension allows other extensions to register, or unregister, their own temp
 
 - `template.registerTemplate` allows to register a single template (but you can call multiple times).The command takes two arguments:
   - `id`: unique identifier for a given template
-  - `template`: a JSON `string` representation of a [Template](#template) schema. Use absolute paths for all template files, otherwise the will be resolved against `./templates/`, or the `templates.manifestPath` configured path, on the current workspace.
+  - `template`: a JSON `string` representation of a [Template](#template) schema. Use absolute paths for all template files, otherwise the will be resolved against the current workspace root.
 
 -  `template.registerTemplate` allows to unregister a template by `id`.
 

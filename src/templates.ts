@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as os from 'os';
 import { Template, TemplatesManifest } from "./schemas";
 
 /**
@@ -12,25 +13,34 @@ const Templates: Map<string, Template> = new Map<string, Template>();
 const TemplatesManifestDefaultPath = "./.templates/templates.json";
 
 /**
- * Get expected path to templates manifest.
- * @param uri Folder containing manifest.
- * @returns Path as URI.
+ * Get expected path to templates manifest in user's home folder.
+ * @returns Absolute {@link vscode.Uri}.
  */
-export function getManifestPath(uri: vscode.Uri): vscode.Uri {
-  const manifestPath = vscode.workspace.getConfiguration("templates")
-    .get("manifestPath", TemplatesManifestDefaultPath) || TemplatesManifestDefaultPath;
-  return vscode.Uri.joinPath(uri, manifestPath);
+export function getHomeManifestUri(): vscode.Uri {
+  const homeFolder = vscode.Uri.file(os.homedir());
+  return getManifestUri("globalManifestPath", homeFolder);
 }
 
 /**
  * Get expected path to templates manifest.
- * @param folder Workspace root containing manifest.
- * @returns Path as URI.
+ * @param configurationValue Name of configuration value under `templates` a user-defined path.
+ * @param baseUri Base folder to resolve a relative path from.
+ * @returns Absolute {@link vscode.Uri}.
  */
-export function getWorkspaceManifestPath(folder: vscode.WorkspaceFolder): vscode.Uri {
-  return getManifestPath(folder.uri);
+function getManifestUri(configurationValue: string, baseUri: vscode.Uri): vscode.Uri {
+  const manifestPath = vscode.workspace.getConfiguration("templates")
+    .get(configurationValue, TemplatesManifestDefaultPath) || TemplatesManifestDefaultPath;
+  return vscode.Uri.joinPath(baseUri, manifestPath);
 }
 
+/**
+ * Get expected path to templates manifest in folder.
+ * @param folder Workspace root containing manifest.
+ * @returns Absolute {@link vscode.Uri}.
+ */
+export function getWorkspaceManifestUri(folder: vscode.WorkspaceFolder): vscode.Uri {
+  return getManifestUri("workspaceManifestPath", folder.uri);
+}
 
 /**
  * Get templates registered via {@link registerTemplate}.

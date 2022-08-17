@@ -2,11 +2,12 @@
 
 # Preview
 ## 0.0.4
+- Define `templates.globalManifestPath` and `templates.workspaceManifestPath` configuration settings.
+  - This breaks support for `templates.manifestPath` support (OK during preview phase).
 ## 0.0.3
 - Add support for templates to be defined from user home directory.
   - For now, expected path is default `./templates/templates.json` OR value of `templates.manifestPath` setting.
 - Add error dialog to help with debugging (temporarily until a logger is in place).
-
 ## 0.0.2
 - Fix: template manifest not detected.
 - Add `New item from template …` to `File/New File …` command, and enable it on the Command-Palette.
