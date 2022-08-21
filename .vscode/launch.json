@@ -15,7 +15,7 @@
       "preLaunchTask": "npm: watch"
     },
     {
-      "name": "Run Extension Tests",
+      "name": "Test Extension",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
