@@ -3,8 +3,8 @@ import * as vscodeUri from 'vscode-uri';
 import * as path from 'path';
 import { FileEditContext, TemplateEditContext } from './templateEdit';
 
-// VSCode does not expose its system for variable replacement, so this 
-// code provides it. 
+// VSCode does not expose its system for variable replacement, so this
+// code provides it.
 // See: https://github.com/microsoft/vscode/issues/46471
 
 // VSCode default variable reference:
