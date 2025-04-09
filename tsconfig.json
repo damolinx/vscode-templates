@@ -5,6 +5,7 @@
     "outDir": "out",
     "sourceMap": true,
     "rootDir": "src",
+    "skipLibCheck": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,

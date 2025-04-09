@@ -3,4 +3,6 @@ out/test/**
 src/**
 **/*.map
 .gitignore
+esbuild.mjs
+eslint.config.mjs
 tsconfig.json
