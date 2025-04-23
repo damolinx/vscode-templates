@@ -35,7 +35,7 @@ export interface Template {
   /**
    * File templates to add.
    */
-  readonly files: ReadonlyArray<FileTemplate>;
+  readonly files: readonly FileTemplate[];
 
   /**
    * Template location. This is relative to parent {@link TemplateManifest}.
@@ -55,5 +55,5 @@ export interface TemplatesManifest {
   /**
    * List of available templates.
    */
-  readonly templates: ReadonlyArray<Template>;
+  readonly templates: readonly Template[];
 }

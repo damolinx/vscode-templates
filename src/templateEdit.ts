@@ -28,10 +28,10 @@ export interface FileEditContext extends TemplateEditContext {
 export async function createTemplateEditAsync(context: TemplateEditContext): Promise<vscode.WorkspaceEdit> {
   const edit = new vscode.WorkspaceEdit();
   for (const templateFile of context.template.files) {
-    const editContext = <FileEditContext>{
+    const editContext = {
       ...context,
-      ...await getUrisAsync(context, templateFile)
-    };
+      ...await getUrisAsync(context, templateFile),
+    } as FileEditContext;
     const targetContent = await getTargetContentAsync(editContext);
     await updateWorkspaceEditAsync(edit, editContext.target, targetContent);
   }
@@ -43,7 +43,7 @@ async function getUrisAsync(context: TemplateEditContext, templateFile: FileTemp
   const targetRelativePath = context.template.createFolder ? [context.itemName, targetItemName] : [targetItemName];
   return {
     source: vscode.Uri.joinPath(context.templateRoot, templateFile.source),
-    target: vscode.Uri.joinPath(context.targetFolder, ...targetRelativePath)
+    target: vscode.Uri.joinPath(context.targetFolder, ...targetRelativePath),
   };
 }
 

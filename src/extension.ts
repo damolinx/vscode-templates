@@ -6,7 +6,7 @@ import { getHomeManifestUri, getRegisteredTemplates, getWorkspaceManifestUri, lo
 import { showTemplateWizardAsync, TemplateRootUriTuple } from './templatesUI';
 
 /**
- * Extension startup. 
+ * Extension startup.
  * @param context Context.
  */
 export function activate(context: vscode.ExtensionContext) {
@@ -18,29 +18,29 @@ export function activate(context: vscode.ExtensionContext) {
         // See: https://github.com/Microsoft/vscode/issues/3553
         const folder = folderPathOrUri ?? vscode.workspace.workspaceFolders?.at(0)?.uri;
         if (!folder) {
-          vscode.window.showErrorMessage("No target folder to add items to");
+          vscode.window.showErrorMessage('No target folder to add items to');
           return;
         }
         await createNewItemsAsync(folder).catch((reason) =>
           // TODO: Tons of validation.
-          vscode.window.showErrorMessage(reason.toString(), { modal: true, detail: reason.stack || ''})
+          vscode.window.showErrorMessage(reason.toString(), { modal: true, detail: reason.stack || ''}),
         );
-      }
+      },
     ),
     vscode.commands.registerCommand(
       'templates.registerTemplate',
-      (id: string, templateAsJSON: string): void => registerTemplate(id, templateAsJSON)
+      (id: string, templateAsJSON: string): void => registerTemplate(id, templateAsJSON),
     ),
     vscode.commands.registerCommand(
       'templates.unregisterTemplate',
-      (id: string): boolean => unregisterTemplate(id)
-    )
+      (id: string): boolean => unregisterTemplate(id),
+    ),
   );
 }
 
 /**
  * Add a new item using a template.
- * 
+ *
  * @param folder Folder to add new item to. Must be an absolute URI or path to
  * a folder that belongs to an open workspace.
  */
@@ -54,13 +54,13 @@ async function createNewItemsAsync(folder: vscode.Uri | string): Promise<void> {
     return;
   }
 
-  // Load templates every time to avoid the risks and complexities of monitoring 
-  // the FS on a feature that would be uncommonly used. 
+  // Load templates every time to avoid the risks and complexities of monitoring
+  // the FS on a feature that would be uncommonly used.
   const templates = await loadTemplates(targetWorkspaceFolder);
   if (templates.size === 0) {
     // TODO: Offer to create a template file?
     vscode.window.showWarningMessage(
-      "There are no templates available. They can be define in your workspace or user directory");
+      'There are no templates available. They can be define in your workspace or user directory');
     return;
   }
 
@@ -76,19 +76,19 @@ async function createNewItemsAsync(folder: vscode.Uri | string): Promise<void> {
     targetFolder: targetFolderUri,
     template: selection.template,
     templateRoot: templateRootUri,
-    workspace: targetWorkspaceFolder
+    workspace: targetWorkspaceFolder,
   });
 
   const applied = await vscode.workspace.applyEdit(edit);
   if (!applied) {
-    throw new Error("Failed to apply template changes."); // TODO: how to get further details here?
+    throw new Error('Failed to apply template changes.'); // TODO: how to get further details here?
   }
 }
 
 async function loadTemplates(workspaceFolder: vscode.WorkspaceFolder): Promise<Map<string, TemplateRootUriTuple>> {
   const templates = new Map<string, TemplateRootUriTuple>();
 
-  // Load programatically-added templates. There is no manifest to connect them to, 
+  // Load programatically-added templates. There is no manifest to connect them to,
   // so it is assumed these provide absolute or workspace-relative URIs.
   getRegisteredTemplates().forEach((template: Template, id: string) => {
     templates.set(id, { template: template });
@@ -97,7 +97,7 @@ async function loadTemplates(workspaceFolder: vscode.WorkspaceFolder): Promise<M
   // Load templates from user folder then workspace
   const homeManifestUri = getHomeManifestUri();
   const workspaceManifestUri = getWorkspaceManifestUri(workspaceFolder);
-  for (var manifestUri of [homeManifestUri, workspaceManifestUri]) {
+  for (const manifestUri of [homeManifestUri, workspaceManifestUri]) {
     const manifestExists = await vscode.workspace.fs.stat(manifestUri).then(() => true, () => false);
     if (!manifestExists) {
       continue; // Nothing to process

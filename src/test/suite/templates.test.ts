@@ -4,7 +4,7 @@ import { Template } from '../../schemas';
 import { getRegisteredTemplates, registerTemplate, unregisterTemplate } from '../../templates';
 
 suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, () => {
-  let restorables: Array<{ restore: () => void }>;
+  let restorables: { restore: () => void }[];
 
   setup(() => {
     restorables = [];
@@ -16,12 +16,12 @@ suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, 
 
   test('getRegisteredTemplates / registerTemplate / unregisterTemplate', () => {
     const template: Template = {
-      location: "test location",
-      name: "test name",
+      location: 'test location',
+      name: 'test name',
       files: [],
     };
     const templateAsJSON = JSON.stringify(template);
-    const templateId = "test:templateId";
+    const templateId = 'test:templateId';
 
     assert.strictEqual(getRegisteredTemplates().size, 0);
     registerTemplate(templateId, templateAsJSON);

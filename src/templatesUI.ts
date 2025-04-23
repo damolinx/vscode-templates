@@ -16,16 +16,16 @@ export interface TemplateMetadataTuple extends TemplateRootUriTuple {
  * @param tuples Tuples to select from.
  * @returns Selected template and captured values.
  */
-export async function showTemplateWizardAsync(tuples: Array<TemplateRootUriTuple>)
+export async function showTemplateWizardAsync(tuples: TemplateRootUriTuple[])
   : Promise<TemplateMetadataTuple | undefined> {
   const items = tuples
     .sort((a, b) => a.template.name.localeCompare(b.template.name))
     .map((templateAndRoot) =>
-      <vscode.QuickPickItem & TemplateRootUriTuple>{
+      ({
         label: templateAndRoot.template.name,
         description: templateAndRoot.template.description,
         ...templateAndRoot,
-      });
+      } as vscode.QuickPickItem & TemplateRootUriTuple));
 
   let selection: TemplateRootUriTuple | undefined;
   let itemName: string | undefined;
@@ -44,10 +44,10 @@ export async function showTemplateWizardAsync(tuples: Array<TemplateRootUriTuple
   }
 
   if (!selection) {
-    throw new Error("Missing selected template (bug)");
+    throw new Error('Missing selected template (bug)');
   }
   if (!itemName) {
-    throw new Error("Missing target item name (bug)");
+    throw new Error('Missing target item name (bug)');
   }
 
   return {
@@ -55,7 +55,7 @@ export async function showTemplateWizardAsync(tuples: Array<TemplateRootUriTuple
     template: selection.template,
     values: {
       itemName: itemName,
-    }
+    },
   };
 
   // TODO: Support inputs/$input
@@ -69,18 +69,18 @@ export async function showTemplateWizardAsync(tuples: Array<TemplateRootUriTuple
         const result = await showItemNameInput(selection!.template, validateItemName);
         itemName = result?.value;
         return { cancel: !result, back: !!result?.back };
-      }
+      },
     ];
   }
 }
 
-async function showTemplateQuickPick(items: Array<TemplateRootUriTuple & vscode.QuickPickItem>): Promise<TemplateRootUriTuple | undefined> {
-  const options = <vscode.QuickPickOptions>{
+async function showTemplateQuickPick(items: (TemplateRootUriTuple & vscode.QuickPickItem)[]): Promise<TemplateRootUriTuple | undefined> {
+  const options = {
     matchOnDetail: true,
     matchOnDescription: true,
-    placeHolder: "Select template to create item(s) from",
-    title: "New Item",
-  };
+    placeHolder: 'Select template to create item(s) from',
+    title: 'New Item',
+  } as vscode.QuickPickOptions;
   return vscode.window.showQuickPick(items, options);
 }
 
@@ -91,9 +91,9 @@ function showItemNameInput(template: Template, validateCallback: (input: string)
     input.buttons = [
       vscode.QuickInputButtons.Back,
     ];
-    input.placeholder = "Provide a name for items to be created";
+    input.placeholder = 'Provide a name for items to be created';
     input.title = `New ${template.name}: Item Name`;
-    input.value = template.defaultItemName || ""; // TODO: maybe calculate one with number suffix ?
+    input.value = template.defaultItemName || ''; // TODO: maybe calculate one with number suffix ?
 
     const disposables: vscode.Disposable[] = [];
     disposables.push(
@@ -129,11 +129,11 @@ function showItemNameInput(template: Template, validateCallback: (input: string)
 function validateItemName(input: string): string | undefined {
   // TODO: define rules and improve.
   if (!input) {
-    return "Item name cannot be empty";
+    return 'Item name cannot be empty';
   }
 
   if (input.includes('/') || input.includes('\\')) {
-    return "Item name cannot include path separators";
+    return 'Item name cannot include path separators';
   }
 
   return;

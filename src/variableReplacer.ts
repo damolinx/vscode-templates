@@ -14,9 +14,7 @@ import { FileEditContext, TemplateEditContext } from './templateEdit';
 //  https://docs.microsoft.com/en-us/visualstudio/ide/template-parameters?view=vs-2022
 
 
-interface VariableCallBack<TContext extends TemplateEditContext> {
-  (context: TContext, variableName: string): string | undefined;
-}
+type VariableCallBack<TContext extends TemplateEditContext> = (context: TContext, variableName: string) => string | undefined;
 
 /**
  * Get a version of `content` with all file-template level variables replaced.
@@ -44,7 +42,7 @@ async function replaceVariablesAsync<TContext extends TemplateEditContext>(conte
     return content; // Nothing to replace.
   }
 
-  for (let match of matches) {
+  for (const match of matches) {
     if (!cache.has(match)) {
       const replacementValue = await getReplacementValueAsync(context, match, variableCallBack);
       cache.set(match, replacementValue);
@@ -76,7 +74,7 @@ async function evalCommandAsync(command: string): Promise<string | undefined> {
   try {
     const replacementValue = await vscode.commands.executeCommand(command);
     return replacementValue ? String(replacementValue) : undefined;
-  } catch (e) {
+  } catch {
     // TODO: output error message? show error dialog, fail process?
     return;
   }

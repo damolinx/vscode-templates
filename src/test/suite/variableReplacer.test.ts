@@ -6,7 +6,7 @@ import { FileEditContext, TemplateEditContext } from '../../templateEdit';
 import { replaceFileTemplateLevelVariablesAsync, replaceTemplateLevelVariablesAsync } from '../../variableReplacer';
 
 suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, () => {
-  let restorables: Array<{ restore: () => void }>;
+  let restorables: { restore: () => void }[];
 
   setup(() => {
     restorables = [];
@@ -17,8 +17,8 @@ suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, 
   });
 
   test('Empty string', async () => {
-    const original = "";
-    const expected = "";
+    const original = '';
+    const expected = '';
     const context = createContext<FileEditContext>();
 
     assert.strictEqual(
@@ -28,8 +28,8 @@ suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, 
   });
 
   test('Simple variable', async () => {
-    const itemName = "Expected Item Name";
-    const original = "Template Variable: ${itemName}";
+    const itemName = 'Expected Item Name';
+    const original = 'Template Variable: ${itemName}';
     const expected = `Template Variable: ${itemName}`;
     const context = createContext<FileEditContext>({ itemName: itemName });
 
@@ -56,7 +56,7 @@ suite(`Suite: ${basename(__filename)}: replaceFileTemplateLevelVariablesAsync`, 
 });
 
 suite(`Suite: ${basename(__filename)}: replaceTemplateLevelVariablesAsync`, () => {
-  let restorables: Array<{ restore: () => void }>;
+  let restorables: { restore: () => void }[];
 
   setup(() => {
     restorables = [];
@@ -67,8 +67,8 @@ suite(`Suite: ${basename(__filename)}: replaceTemplateLevelVariablesAsync`, () =
   });
 
   test('Empty string', async () => {
-    const original = "";
-    const expected = "";
+    const original = '';
+    const expected = '';
     const context = createContext<TemplateEditContext>();
 
     assert.strictEqual(
@@ -77,8 +77,8 @@ suite(`Suite: ${basename(__filename)}: replaceTemplateLevelVariablesAsync`, () =
   });
 
   test('Simple variables', async () => {
-    const itemName = "Expected Item Name";
-    const original = `<path>\${pathSeparator}\${itemName}`;
+    const itemName = 'Expected Item Name';
+    const original = '<path>${pathSeparator}${itemName}';
     const expected = `<path>${pathSeparator}${itemName}`;
     const context = createContext<TemplateEditContext>({ itemName: itemName });
 
@@ -88,7 +88,7 @@ suite(`Suite: ${basename(__filename)}: replaceTemplateLevelVariablesAsync`, () =
   });
 
   test('Unsupported variable', async () => {
-    const original = "${file}";
+    const original = '${file}';
     const expected = original;
     const context = createContext<TemplateEditContext>();
 
@@ -116,7 +116,7 @@ suite(`Suite: ${basename(__filename)}: replaceTemplateLevelVariablesAsync`, () =
 
 
 function createContext<TContext extends TemplateEditContext>(overrides?: { [K in keyof TContext]?: TContext[K] }): TContext {
-  return <TContext>{
+  return {
     ...overrides,
-  };
+  } as TContext;
 }
